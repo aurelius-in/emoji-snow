@@ -43,13 +43,12 @@
       touchStartY = touch.clientY;
       // Character selection logic
       if (gameState === 'selectCharacter') {
-        if (touch.clientX >= 600 && touch.clientX <= 900 && touch.clientY >= 400 && touch.clientY <= 700) {
-          playerEmoji = "🏂";
-          gameState = 'play';
-        } else if (touch.clientX >= 1400 && touch.clientX <= 1700 && touch.clientY >= 400 && touch.clientY <= 700) {
-          playerEmoji = "🏂";
-          gameState = 'play';
-        }
+      if (touch.clientX >= 600 && touch.clientX <= 900 && touch.clientY >= 400 && touch.clientY <= 700) {
+        playerEmoji = "🏂";
+        gameState = 'play';
+      } else if (touch.clientX >= 1400 && touch.clientX <= 1700 && touch.clientY >= 400 && touch.clientY <= 700) {
+        playerEmoji = "⛷️";
+        gameState = 'play';
       }
     });
 
@@ -191,44 +190,44 @@ const draw = () => {
     ctx.globalAlpha = originalAlpha; // Reset the alpha value back to its original state
   });
 
-// Draw background hills
-ctx.beginPath();
-ctx.moveTo(bgHills[0].x - scrollX, bgHills[0].y);
-bgHills.forEach((hill, index) => {
-  if (index !== 0) {
-    ctx.lineTo(hill.x - scrollX, hill.y);
-  }
-});
-ctx.lineTo(canvas.width, canvas.height);
-ctx.lineTo(0, canvas.height);
-ctx.closePath();
-ctx.fillStyle = "#D2B48C"; // You can choose a different color
-ctx.fill();
-ctx.stroke();
-    
+        // Draw background hills with new color
+        ctx.beginPath();
+        ctx.moveTo(bgHills[0].x - scrollX, bgHills[0].y);
+        bgHills.forEach((hill, index) => {
+          if (index !== 0) {
+            ctx.lineTo(hill.x - scrollX, hill.y);
+          }
+        });
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = "#FFFFFF"; // Pure white
+        ctx.fill();
+        ctx.stroke();
+
     // Draw background emojis
   bgEmojis.forEach(emoji => {
     ctx.font = "100px Arial";
     ctx.fillText(emoji.symbol, emoji.x - scrollX, emoji.y);
   });
 
-    // Draw ground hills
-    ctx.beginPath();
-    ctx.moveTo(hills[0].x - scrollX, hills[0].y);
-    for (let i = 1; i < hills.length; i++) {
-      const prevHill = hills[i - 1];
-      const hill = hills[i];
-      const midX = (prevHill.x + hill.x) / 2 - scrollX;
-      const midY = (prevHill.y + hill.y) / 2;
-      ctx.quadraticCurveTo(prevHill.x - scrollX, prevHill.y, midX, midY);
-    }
-    ctx.lineTo(hills[hills.length - 1].x - scrollX, hills[hills.length - 1].y);
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.lineTo(0, canvas.height);
-    ctx.closePath();
-    ctx.fillStyle = "#8B4513";
-    ctx.fill();
-    ctx.stroke();
+// Draw ground hills with new color and steeper slope
+        ctx.beginPath();
+        ctx.moveTo(hills[0].x - scrollX, hills[0].y);
+        for (let i = 1; i < hills.length; i++) {
+          const prevHill = hills[i - 1];
+          const hill = hills[i];
+          const midX = (prevHill.x + hill.x) / 2 - scrollX;
+          const midY = (prevHill.y + hill.y) / 2;
+          ctx.quadraticCurveTo(prevHill.x - scrollX, prevHill.y, midX, midY);
+        }
+        ctx.lineTo(hills[hills.length - 1].x - scrollX, hills[hills.length - 1].y);
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = "#F0F8FF"; // Almost white blue-grey
+        ctx.fill();
+        ctx.stroke();
 
     // Draw the player
     ctx.save();
