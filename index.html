@@ -116,13 +116,15 @@ const generateAnimal = () => {
 };
     
 const generateHill = () => {
-  const lastHill = hills[hills.length - 1];
-  const newHill = {
-    x: lastHill.x + Math.floor(Math.random() * 800) + 1000,
-    y: Math.min(canvas.height - 400, Math.max(400, lastHill.y + Math.floor(Math.random() * 800) - 400))
-  };
-  hills.push(newHill);
-       generateAnimal(hills[hills.length - 1]);  // Generate animal for the new hill
+      const lastHill = hills[hills.length - 1];
+      const steepnessFactor = Math.random() < 0.8 ? 1 : -1; // 80% chance for downhill, 20% for uphill
+      const newY = lastHill.y + Math.floor(Math.random() * 400 + 400) * steepnessFactor; // Adjust this line
+      const newHill = {
+        x: lastHill.x + Math.floor(Math.random() * 800) + 1000,
+        y: Math.min(canvas.height - 400, Math.max(400, newY))
+      };
+      hills.push(newHill);
+      generateAnimal(hills[hills.length - 1]);  // Generate animal for the new hill
     };
 
 const generateBgHill = () => {
