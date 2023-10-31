@@ -1,232 +1,109 @@
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+const draw = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (gameState === 'selectCharacter') {
+    // Save the current context state
+    ctx.save();
+    // Translate to the emoji's position
+    ctx.translate(750, 700);
+    // Flip the context horizontally
+    ctx.scale(-1, 1);
+    // Draw the flipped emoji
+    ctx.font = "300px Arial";
+    ctx.fillText("⛷️", -150, 0);
+    // Restore the context to its original state
+    ctx.restore();
+    ctx.font = "300px Arial";
+    ctx.fillText("or", 1000, 700);
+    // Save the current context state
+    ctx.save();
+    // Translate to the emoji's position
+    ctx.translate(1550, 700);
+    // Flip the context horizontally
+    ctx.scale(-1, 1);
+    // Draw the flipped emoji
+    ctx.font = "300px Arial";
+    ctx.fillText("🏂", -150, 0);
+    // Restore the context to its original state
+    ctx.restore();
+  } else {
+  // Set the sky blue background
+  ctx.fillStyle = "skyblue";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    let gameState = 'selectCharacter', playerEmoji = null, scrollX = 0, scrollY = 0;
-    let player = { x: 50, y: 960, width: 50, height: 50, vx: 10, vy: 0, gravity: 0.5, jump: -10, grounded: false, jumping: false };
-    let hills = [{x: 0, y: 960}, {x: 500, y: 960}];
-    let animals = [];
-    let touchStartX, touchStartY, touchEndX, touchEndY;
-    let bgHills = [{x: 0, y: 960}, {x: 500, y: 960}];
-    let bgEmojiList = ["🌲","🌲","🌲","☃️","🎄"];
-    let bgEmojis = [];
-    const tinyAnimals = ["🧊", "🐇"];
-    const smallAnimals = ["🐧"];
-    const bigAnimals = ["🦌"];
-    const allAnimals = [...tinyAnimals, ...smallAnimals, ...bigAnimals];
-    let animalSpawnCounter = 0;
-    let bgEmojiSpawnCounter = 0;
-    let playerMomentum = 0;
-    const momentumDuration = 3000; // 1.5 seconds in milliseconds
-    let lastSwipeTime = 0;
-    let lastBgEmojiSpawnTime = 0;
-    let farBgMountains = [];
-    let clouds = [];
-    
+      // Draw clouds
+      clouds.forEach(cloud => {
+        const originalAlpha = ctx.globalAlpha; // Store the original alpha value
+        ctx.globalAlpha = cloud.opacity; // Set the new alpha value for the cloud
+        ctx.font = `${cloud.size}px Arial`;
+        ctx.fillText(cloud.emoji, cloud.x - scrollX, cloud.y);
+        ctx.globalAlpha = originalAlpha; // Reset the alpha value back to its original state
+      });
 
-    
-    // Event listeners for touchstart and touchend
-    canvas.addEventListener("touchstart", function(e) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      // Character selection logic
-      if (gameState === 'selectCharacter') {
-      if (touch.clientX >= 600 && touch.clientX <= 900 && touch.clientY >= 400 && touch.clientY <= 700) {
-        playerEmoji = "🏂";
-        gameState = 'play';
-      } else if (touch.clientX >= 1400 && touch.clientX <= 1700 && touch.clientY >= 400 && touch.clientY <= 700) {
-        playerEmoji = "⛷️";
-        gameState = 'play';
-      }
-      }
-    });
+  // Draw far background mountains
+  farBgMountains.forEach(mountain => {
+    const originalAlpha = ctx.globalAlpha; // Store the original alpha value
+    ctx.globalAlpha = mountain.opacity; // Set the new alpha value for the mountain
+    const adjustedSize = mountain.size * 0.8; // Make the mountain 20% smaller
+    ctx.font = `${adjustedSize}px Arial`;
+    ctx.save();
+    ctx.scale(mountain.aspectRatio, 1);
+    ctx.fillText(mountain.emoji, (mountain.x - scrollX) / mountain.aspectRatio, adjustedSize - 300); // 300px higher (200 + 100)
+    ctx.restore();
+    ctx.globalAlpha = originalAlpha; // Reset the alpha value back to its original state
+  });
 
-canvas.addEventListener("touchend", function(e) {
-  e.preventDefault();
-  const touch = e.changedTouches[0];
-  touchEndX = touch.clientX;
-  touchEndY = touch.clientY;
-  
-  // Movement logic
-  if (gameState !== 'selectCharacter') {
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-    
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 0) {
-        playerMomentum = 50;
-        lastSwipeTime = new Date().getTime();
-        player.x += 50;  // Moved this line inside the if condition
-      } else {
-        player.x -= 50;
-      }
-    } else {
-      if (deltaY < 0 && player.grounded) {
-        player.vy = player.jump;
-        player.grounded = false;
-        player.jumping = true;
-      }
-    }
-  }
-});
-
-const generateCloud = () => {
-  const cloudEmoji = "☁️";
-  const opacity = Math.random() * 0.45 + 0.5;
-  const sizeFactor = Math.random() * 1.5 + 0.5;
-  const baseSize = 200;
-  const finalSize = baseSize * sizeFactor;
-  const y = Math.floor(Math.random() * 201) + 50;
-  const x = player.x + canvas.width; // Spawn just outside the right edge of the screen
-  clouds.push({ emoji: cloudEmoji, opacity, size: finalSize, x, y });
-};
-
-const generateFarBgMountain = () => {
-  const mountainEmoji = ["🗻", "🗻", "🏔"][Math.floor(Math.random() * 3)];
-  const opacity = Math.random() * 0.1 + 0.8;
-  const size = Math.floor(Math.random() * 5000) + 1000;
-  const aspectRatio = Math.random() * 3 + 1;
-  const x = player.x + canvas.width; // Spawn just outside the right edge of the screen
-  farBgMountains.push({emoji: mountainEmoji, opacity, size, aspectRatio, x});
-};
-
-const generateAnimal = () => {
-  const animalEmoji = allAnimals[Math.floor(Math.random() * allAnimals.length)];
-  let animalSize = tinyAnimals.includes(animalEmoji) ? 'tiny' : smallAnimals.includes(animalEmoji) ? 'small' : 'big';
-  
-  const randomX = player.x + canvas.width; // Spawn just outside the right edge of the screen
-  const randomYOffset = animalSize === 'tall' ? Math.floor(Math.random() * 46) + 75 : Math.floor(Math.random() * 51) + 50;
-  const newY = player.y + randomYOffset;
-  const newAnimal = { emoji: animalEmoji, x: randomX, y: newY, size: animalSize };
-  animals.push(newAnimal);
-};
-    
-const generateHill = () => {
-      const lastHill = hills[hills.length - 1];
-      const steepnessFactor = Math.random() < 0.8 ? 1 : -1; // 80% chance for downhill, 20% for uphill
-      const newY = lastHill.y + Math.floor(Math.random() * 400 + 400) * steepnessFactor; // Adjust this line
-      const newHill = {
-        x: lastHill.x + Math.floor(Math.random() * 800) + 1000,
-        y: Math.min(canvas.height - 400, Math.max(400, newY))
-      };
-      hills.push(newHill);
-      generateAnimal(hills[hills.length - 1]);  // Generate animal for the new hill
-    };
-
-const generateBgHill = () => {
-  const lastBgHill = bgHills[bgHills.length - 1];
-  
-  // Generate newY based on player's y position
-  let newY = player.y - (Math.floor(Math.random() * 101) + 100); // Random value between 100 and 200 above player's y
-  
-  const newBgHill = {
-    x: lastBgHill.x + Math.floor(Math.random() * 800) + 1000,
-    y: newY
-  };
-  bgHills.push(newBgHill);
-};
-
-const update = () => {
-  if (gameState !== 'selectCharacter') {
-    player.y += player.vy;
-    player.vy += player.gravity;
-    player.grounded = false;
-
-    let prevHill = hills[0];
-    let slope = 0;
-    
-    // Generate clouds
-      if (clouds.length === 0 || player.x - clouds[clouds.length - 1].x > 1000) {
-        generateCloud();
-      }
-  
-    // Generate far background mountains
-  if (farBgMountains.length === 0 || player.x - farBgMountains[farBgMountains.length - 1].x > 10000) {
-    generateFarBgMountain();
-  }
-    // Apply momentum
-    const currentTime = new Date().getTime();
-    if (currentTime - lastSwipeTime <= momentumDuration) {
-      const timePassed = currentTime - lastSwipeTime;
-      const momentumFactor = 1 - (timePassed / momentumDuration);
-      player.x += playerMomentum * momentumFactor;
-    }
-
-    // Collision detection with hills
-    let hillFound = false;
-    for (let index = 1; index < hills.length; index++) {
-      const hill = hills[index];
-      slope = (hill.y - prevHill.y) / (hill.x - prevHill.x);
-      if (player.x >= prevHill.x && player.x <= hill.x) {
-        hillFound = true;
-        const expectedY = slope * (player.x - prevHill.x) + prevHill.y;
-        if (player.y >= expectedY) {
-          player.y = expectedY;
-          player.vy = 0;
-          player.grounded = true;
-          player.jumping = false;
-
-          // Apply enhanced gravity based on slope
-          if (slope > 0) {
-            player.x += slope * 8;
-          } else {
-            player.x += slope * 4;
+        // Draw background hills with new color
+        ctx.beginPath();
+        ctx.moveTo(bgHills[0].x - scrollX, bgHills[0].y);
+        bgHills.forEach((hill, index) => {
+          if (index !== 0) {
+            ctx.lineTo(hill.x - scrollX, hill.y);
           }
+        });
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = "#FFFFFF"; // Pure white
+        ctx.fill();
+        ctx.stroke();
+
+    // Draw background emojis
+  bgEmojis.forEach(emoji => {
+    ctx.font = "100px Arial";
+    ctx.fillText(emoji.symbol, emoji.x - scrollX, emoji.y);
+  });
+
+// Draw ground hills with new color and steeper slope
+        ctx.beginPath();
+        ctx.moveTo(hills[0].x - scrollX, hills[0].y);
+        for (let i = 1; i < hills.length; i++) {
+          const prevHill = hills[i - 1];
+          const hill = hills[i];
+          const midX = (prevHill.x + hill.x) / 2 - scrollX;
+          const midY = (prevHill.y + hill.y) / 2;
+          ctx.quadraticCurveTo(prevHill.x - scrollX, prevHill.y, midX, midY);
         }
-      }
-      prevHill = hill;
-    }
+        ctx.lineTo(hills[hills.length - 1].x - scrollX, hills[hills.length - 1].y);
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = "#F0F8FF"; // Almost white blue-grey
+        ctx.fill();
+        ctx.stroke();
 
-    if (!hillFound) {
-      player.x = hills[hills.length - 1].x;
-    }
+    // Draw the player
+    ctx.save();
+    ctx.translate(player.x - scrollX + player.width / 2, player.y + player.height / 2);
+    ctx.translate(player.x - scrollX + player.width / 2, player.y - scrollY + player.height / 2);
+    ctx.scale(-1, 1);
+    ctx.font = "144px Arial";
+    ctx.fillText(playerEmoji, -player.width / 2, -player.height / 2);
+    ctx.restore();
 
-    // Animal Generation
-      if (animals.length === 0 || player.x - animals[animals.length - 1].x > Math.floor(Math.random() * 401) + 100) {
-        generateAnimal();
-      }
-    
-    // Background Emoji Generation
-    if (bgEmojis.length === 0 || player.x - bgEmojis[bgEmojis.length - 1].x > 900) {
-      const lastBgHill = bgHills[bgHills.length - 1];
-      const emojiSymbol = bgEmojiList[Math.floor(Math.random() * bgEmojiList.length)];
-      const newY = Math.floor(Math.random() * (hills[hills.length - 1].y - lastBgHill.y) + lastBgHill.y);
-      bgEmojis.push({ symbol: emojiSymbol, x: lastBgHill.x, y: newY });
-    }
-
-    // Momentum
-    if (currentTime - lastSwipeTime > momentumDuration) {
-      playerMomentum = 0;
-    }
-
-    if (player.x > bgHills[bgHills.length - 2].x) {
-      generateBgHill();
-    }
-    if (player.x > hills[hills.length - 2].x) {
-      generateHill();
-    }
-
-    scrollX = player.x - canvas.width / 2;
-    scrollY = player.y - canvas.height / 2;
-
+    // Draw animals
+    animals.forEach(animal => {
+      ctx.font = animal.size === 'tiny' ? "50px Arial" : animal.size === 'small' ? "100px Arial" : animal.size === 'big' ? "200px Arial" : animal.size === 'huge' ? "300px Arial" : "450px Arial";
+      ctx.fillText(animal.emoji, animal.x - scrollX, animal.y);
+    });
   }
 };
-    // Initialize hills and background hills
-    for (let i = 0; i < 5; i++) {
-      generateHill();
-      generateBgHill();
-      generateFarBgMountain();
-      generateCloud(); // Initialize clouds
-    }
-    
-    const gameLoop = () => {
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-};
-    
-    gameLoop();
-  </script>
-</body>
-</html>
