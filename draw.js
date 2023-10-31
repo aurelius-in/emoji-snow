@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Emoji Platformer</title>
-  <style>
-    body { margin: 0; padding: 0; }
-    canvas { border: 4px solid black; }
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-</head>
-<body>
-  <canvas id="gameCanvas" width="3200" height="1440"></canvas>
-  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
