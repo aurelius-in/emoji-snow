@@ -68,10 +68,13 @@ const drawBackground = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, 
   });
 };
 
-// Function to draw the ground
-const drawGround = (ctx, canvas, hills, scrollX) => {
+// Function to draw the steep ground
+const drawGround = (ctx, canvas, scrollX) => {
+  const hills = generateSteepHills(canvas);
+
   ctx.beginPath();
   ctx.moveTo(hills[0].x - scrollX, hills[0].y);
+  
   for (let i = 1; i < hills.length; i++) {
     const prevHill = hills[i - 1];
     const hill = hills[i];
@@ -79,6 +82,7 @@ const drawGround = (ctx, canvas, hills, scrollX) => {
     const midY = (prevHill.y + hill.y) / 2;
     ctx.quadraticCurveTo(prevHill.x - scrollX, prevHill.y, midX, midY);
   }
+  
   ctx.lineTo(hills[hills.length - 1].x - scrollX, hills[hills.length - 1].y);
   ctx.lineTo(canvas.width, canvas.height);
   ctx.lineTo(0, canvas.height);
@@ -87,6 +91,7 @@ const drawGround = (ctx, canvas, hills, scrollX) => {
   ctx.fill();
   ctx.stroke();
 };
+
 
 
 const drawInteractiveElements = (ctx, player, animals, scrollX, playerEmoji) => {
