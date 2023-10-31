@@ -92,13 +92,15 @@ const draw = () => {
         ctx.stroke();
 
     // Draw the player
-    ctx.save();
-    ctx.translate(player.x - scrollX + player.width / 2, player.y + player.height / 2);
-    ctx.translate(player.x - scrollX + player.width / 2, player.y - scrollY + player.height / 2);
-    ctx.scale(-1, 1);
-    ctx.font = "144px Arial";
-    ctx.fillText(playerEmoji, -player.width / 2, -player.height / 2);
-    ctx.restore();
+   ctx.save();
+ctx.font = "144px Arial";
+// Calculate the center coordinates for the player.
+const playerCenterX = player.x + player.width / 2;
+const playerCenterY = player.y + player.height / 2;
+// Translate the context to the calculated center position.
+ctx.translate(playerCenterX - scrollX, playerCenterY);
+ctx.fillText(playerEmoji, -player.width / 2, -player.height / 2);
+ctx.restore();
 
     // Draw animals
     animals.forEach(animal => {
