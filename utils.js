@@ -1,4 +1,4 @@
-    let canvas = document.getElementById("gameCanvas");
+    const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     let gameState = 'selectCharacter', playerEmoji = null, scrollX = 0, scrollY = 0;
