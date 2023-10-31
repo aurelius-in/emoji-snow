@@ -8,14 +8,15 @@ const update = () => {
     let slope = 0;
     
     // Generate clouds
-      if (clouds.length === 0 || player.x - clouds[clouds.length - 1].x > 1000) {
-        generateCloud();
-      }
-  
+    if (clouds.length === 0 || player.x - clouds[clouds.length - 1].x > 1000) {
+      generateCloud();
+    }
+
     // Generate far background mountains
-  if (farBgMountains.length === 0 || player.x - farBgMountains[farBgMountains.length - 1].x > 10000) {
-    generateFarBgMountain();
-  }
+    if (farBgMountains.length === 0 || player.x - farBgMountains[farBgMountains.length - 1].x > 10000) {
+      generateFarBgMountain();
+    }
+
     // Apply momentum
     const currentTime = new Date().getTime();
     if (currentTime - lastSwipeTime <= momentumDuration) {
@@ -54,9 +55,9 @@ const update = () => {
     }
 
     // Animal Generation
-      if (animals.length === 0 || player.x - animals[animals.length - 1].x > Math.floor(Math.random() * 401) + 100) {
-        generateAnimal();
-      }
+    if (animals.length === 0 || player.x - animals[animals.length - 1].x > Math.floor(Math.random() * 401) + 100) {
+      generateAnimal();
+    }
     
     // Background Emoji Generation
     if (bgEmojis.length === 0 || player.x - bgEmojis[bgEmojis.length - 1].x > 900) {
@@ -79,7 +80,6 @@ const update = () => {
     }
 
     scrollX = player.x - canvas.width / 2;
-    scrollY = player.y - canvas.height / 2;
-
+    scrollY = player.y - canvas.height / 2;  // Now centered vertically
   }
 };
