@@ -112,7 +112,7 @@ const draw = () => {
   if (gameState === 'selectCharacter') {
     drawCharacterSelection(ctx);
   } else {
-  drawBackground(ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, hills, scrollX);
+  drawBackground(ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, scrollX);
   drawGround(ctx, canvas, hills, scrollX);
   drawInteractiveElements(ctx, player, animals, scrollX, playerEmoji);
   }
