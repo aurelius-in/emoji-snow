@@ -41,6 +41,21 @@ const generateHill = () => {
       generateAnimal(hills[hills.length - 1]);  // Generate animal for the new hill
     };
 
+// Function to generate steep hills
+const generateSteepHills = (canvas) => {
+  const hills = [];
+  let x = 0;
+  let y = canvas.height / 2;
+  
+  while (x < canvas.width * 2) { // Double canvas width to generate more hills
+    hills.push({x: x, y: y});
+    x += 50;  // Horizontal distance between points
+    y += Math.random() * 30 + 30;  // Vertical distance increases (making it steeper)
+  }
+  
+  return hills;
+};
+
 const generateBgHill = () => {
   const lastBgHill = bgHills[bgHills.length - 1];
   
