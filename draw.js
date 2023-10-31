@@ -18,7 +18,7 @@ const drawCharacterSelection = (ctx) => {
   ctx.restore();
 };
 
-const drawGameState = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, hills, player, animals, scrollX, playerEmoji) => {
+const drawBackground = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, hills, scrollX) => {
   // Set the sky blue background
   ctx.fillStyle = "skyblue";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -45,7 +45,7 @@ const drawGameState = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, h
     ctx.globalAlpha = originalAlpha;
   });
 
-  // Draw background hills with new color
+  // Draw background hills
   ctx.beginPath();
   ctx.moveTo(bgHills[0].x - scrollX, bgHills[0].y);
   bgHills.forEach((hill, index) => {
@@ -66,7 +66,7 @@ const drawGameState = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, h
     ctx.fillText(emoji.symbol, emoji.x - scrollX, emoji.y);
   });
 
-  // Draw ground hills with new color and steeper slope
+  // Draw ground hills
   ctx.beginPath();
   ctx.moveTo(hills[0].x - scrollX, hills[0].y);
   for (let i = 1; i < hills.length; i++) {
@@ -83,7 +83,9 @@ const drawGameState = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, h
   ctx.fillStyle = "#F0F8FF";
   ctx.fill();
   ctx.stroke();
+};
 
+const drawInteractiveElements = (ctx, player, animals, scrollX, playerEmoji) => {
   // Draw the player
   ctx.save();
   ctx.font = "144px Arial";
@@ -101,11 +103,13 @@ const drawGameState = (ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, h
 };
 
 
+
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (gameState === 'selectCharacter') {
     drawCharacterSelection(ctx);
   } else {
-    drawGameState(ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, hills, player, animals, scrollX, playerEmoji);
+  drawBackground(ctx, canvas, clouds, farBgMountains, bgHills, bgEmojis, hills, scrollX);
+  drawInteractiveElements(ctx, player, animals, scrollX, playerEmoji);
   }
 };
