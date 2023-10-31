@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Emoji Platformer</title>
+  <title>Emoji Snow</title>
   <link rel="stylesheet" type="text/css" href="styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <script src="utils.js"></script>
-  <script src="draw.js"></script>
-  <script src="listeners.js"></script> 
-  <script scr="generate.js"></script>
-  <script src="update.js"></script> 
-  <script src="game.js" defer></script> 
 </head>
 <body>
   <canvas id="gameCanvas" width="3200" height="1440"></canvas>
+  <!-- Load scripts at the end of body -->
+  <script src="utils.js" defer></script>
+  <script src="draw.js" defer></script>
+  <script src="generate.js" defer></script> <!-- Corrected the typo 'scr' to 'src' -->
+  <script src="listeners.js" defer></script>
+  <script src="update.js" defer></script>
+  <script src="game.js" defer></script>
 </body>
 </html>
