@@ -8,6 +8,8 @@
   <script src="draw.js"></script>
   <script src="listeners.js"></script> 
   <script scr="generate.js"></script>
+
+  
 </head>
 <body>
   <canvas id="gameCanvas" width="3200" height="1440"></canvas>
@@ -100,21 +102,6 @@ const update = () => {
 
   }
 };
-    // Initialize hills and background hills
-    for (let i = 0; i < 5; i++) {
-      generateHill();
-      generateBgHill();
-      generateFarBgMountain();
-      generateCloud(); // Initialize clouds
-    }
-    
-    const gameLoop = () => {
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-};
-    
-    gameLoop();
   </script>
 </body>
 </html>
