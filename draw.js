@@ -113,6 +113,11 @@ const drawAnimals = (ctx, animals, scrollX) => {
 
 // The main draw function
 const draw = (ctx, gameState, clouds, farBgMountains, bgHills, bgEmojis, hills, player, animals, scrollX, scrollY, playerEmoji, canvas) => {
+  if (!ctx) {
+    console.error("Error: ctx is undefined in draw function.");
+    return;
+  }
+  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (gameState === 'selectCharacter') {
     drawCharacterSelection(ctx);
