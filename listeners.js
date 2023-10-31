@@ -101,3 +101,14 @@ canvas.addEventListener("mouseup", function(e) {
     }
   }
 });
+
+window.addEventListener("keydown", function(e) {
+  if (e.keyCode === 32) { // 32 is the key code for spacebar
+    if (gameState !== 'selectCharacter' && player.grounded) {
+      player.vy = player.jump;  // Set vertical speed to the jump value
+      player.grounded = false;  // Player is now in the air
+      player.jumping = true;    // Player is jumping
+    }
+  }
+});
+
